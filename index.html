@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Selamat Ulang Tahun Yunda</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('img/bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Courier New', monospace;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            /* Sesuaikan tingkat gelapnya di sini */
+            z-index: 0;
+        }
+
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .character-area {
+            flex: 6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            position: relative;
+        }
+
+        .character {
+            width: 180px;
+            max-height: 100%;
+            z-index: 1;
+        }
+
+        .dialog-area {
+            background: rgba(0, 0, 0, 0.7);
+            flex: 4;
+            background: #222;
+            padding: 20px;
+            box-shadow: 0 -2px 10px rgba(255, 255, 255, 0.1);
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 2;
+        }
+
+        .text-box {
+            white-space: pre-line;
+            overflow-y: auto;
+            max-height: 100%;
+        }
+
+        .choice {
+            margin-top: 20px;
+        }
+
+        .choice button {
+            background: #444;
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-right: 10px;
+        }
+
+        .choice button:hover {
+            background-color: #666;
+        }
+
+        .scene {
+            display: none;
+        }
+
+        .scene.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="character-area">
+            <img src="img/karakter1.png" class="character" id="char" />
+            <div class="choice" id="choice-box"></div>
+        </div>
+        <div class="dialog-area">
+            <div id="text-box" class="text-box"></div>
+        </div>
+    </div>
+
+    <script>
+        const scenes = [
+            {
+                choices: [
+                    { label: ">>", next: 1 }
+                ],
+                id: "scene1",
+                text: "Wahhhh halloo.. kalo kamu buka ini berarti Hari ini ulang tahunnya kamu yaa?? \n\n  🎉 Selamat ulang tahun, Yunda 🎂\n\nAku Bot pengantar pesan dari... kayaknya kamu udah tau deh dari siapa ahahaa....",
+                img: "img/karakter1.png"
+            },
+
+            {
+                id: "scene2",
+                text: "Namaku Rin (plesetan dari Rian cuma dihilangin a-nya aja), hehe...\n\nHari ini aku ditugaskan khusus buat nganterin pesan dari dia, yaa.. semacam surat cinta gitulah haha.. tapi ini caranya dia, karna dia bilang tulisannya bakal sulit dibaca jadinya dia minta bantuan aku ahaha...",
+                img: "img/karakter1.png",
+                choices: [
+                    { label: ">>", next: 2 }
+                ]
+            },
+
+            {
+                id: "scene3",
+                text: "Rian bilang ke aku kalo kamu mungkin bakal cemburu sama aku sebagai Botnya...",
+                img: "img/karakter3.png",
+                choices: [
+                    { label: ">>", next: 3 }
+                ]
+            },
+            {
+                id: "scene4",
+                text: "Tenang kok, aku nggak akan ngerebut Rian dari kamu.\n\nAku cuma bot yang Rian bikin... mungkin ini salah satu cara dia ngenalin karyanya ke kamu—sekaligus nunjukin rasa sayangnya ke kamu.",
+                img: "img/karakter2.png",
+                choices: [
+                    { label: ">>", next: 4 }
+                ]
+            },
+
+            {
+                id: "scene5",
+                text: "Aku cuma baris kode yang dia tulis. Sedangkan kamu Yunda. Kamu punya nyawa. Kamu hidup. Dan itu yang sebenarnya Rian butuhin—seseorang yang nyata... yang bisa dia sayangi sepenuh hati \n\n Kamu mau tau fakta unik tentang dia??\n\ atau mau langsung ke intinya aja?",
+                img: "img/karakter3.png",
+                choices: [
+                    { label: "Mauu Dong", next: 5 },
+                    { label: "Lanjut aja", next: 10 }
+                ]
+            },
+            {
+                id: "scene6",
+                text: "🎈 Fakta Unik:\nSebenernya, Rian itu nggak terlalu suka atau tertarik sama robot...\n\nTapi dia punya suatu sifat yaitu pemalas dan.. bodoh 😅\n\Makanya dia belajar tentang robotik, biar bisa ngebantu dia mager. Kalo kamu nemu projeknya yang aneh-aneh ya... itulah hasil dari magernya, ahaha...",
+                img: "img/karakter2.png",
+                choices: [
+                    { label: "Lanjut", next: 6 }
+                ]
+            },
+
+            {
+                id: "scene7",
+                text: "Gimana fakta Randomnya? ahaha..\n\n Nah, sekarang aku bakal nyampein pesan dari Rian, mungkin sih dia udah ngucapin selamat ulang tahun ke kamu, tapi tetep aku sampaikan kok pesan dari dia\n\n Silahkan klik lanjut, pesannya ada disana",
+                img: "img/karakter3.png",
+                choices: [
+                    { label: "Lanjut", next: 7 }
+                ]
+            },
+            {
+                id: "scene8",
+                text: "'🎉 Happy birthdayy, ade..\n\nAku selalu doain yang terbaik buat kamu — apapun yang kamu lakuin, semoga dimudahkan dan bikin kamu makin dekat sama kebahagiaan yang kamu cari.\n\n doa yang terbaik buat kamu'",
+                img: "img/karakter3.png",
+                choices: [
+                    { label: "Lanjut", next: 8 }
+                ]
+            },
+            {
+                id: "scene9",
+                text: "'Btw... Aku tau aku belum selalu bisa ada di dekat kamu setiap waktu..\n\ Tapi aku pengen kamu selalu aman ke mana pun kamu pergi.\n\n Makanya aku siapin helm itu, semoga bisa jadi bentuk kecil dari rasa sayangku—yang selalu pengen ngejaga kamu, walaupun dari jauh'",
+                img: "img/karakter3.png",
+                choices: [
+                    { label: "Lanjut", next: 9 }
+                ]
+            },
+            {
+                id: "scene10",
+                text: "yup... itulah pesan dari dia, wahahaa.. aku jadi baper deh sama hadiahnya, ahaha... \n\n kamu mau lanjut bilang makasih ke dia gak? nanti bakal langsung aku arahin ke nomor wa nya dia loh kalo kamu mau ",
+                img: "img/karakter3.png",
+                choices: [
+                    {
+                        label: "Iya mauu",
+                        action: () => {
+                            alert("aku bakal buka wa kamu yaa");
+                            window.location.href = "https://wa.me/6285770654131?text=Hai%20Rian%2C%20makasih%20ya%20buat%20ucapannya%20%F0%9F%98%8A";
+                        }
+                    },
+                    { label: "Nanti ajalah", next: 13 }
+                ]
+            },
+
+
+            {
+                id: "scene11",
+                text: "Gapapa kok kalau nanti aja.\n\n baiklah kalo gitu, aku bakal nyampein pesan dari Rian langsung, mungkin sih dia udah ngucapin selamat ulang tahun ke kamu, tapi tetep aku sampaikan kok pesan dari dia\n\n Silahkan klik lanjut ",
+                img: "img/karakter1.png",
+                choices: [
+                    { label: "Lanjut", next: 11 }
+                ]
+            },
+
+            {
+                id: "scene12",
+                text: "'🎉 Happy birthdayy, ade..\n\nAku selalu doain yang terbaik buat kamu — apapun yang kamu lakuin, semoga dimudahkan dan bikin kamu makin dekat sama kebahagiaan yang kamu cari. doa yang terbaik buat kamu'",
+                img: "img/karakter3.png",
+                choices: [
+                    { label: "Lanjut", next: 12 }
+                ]
+            },
+
+            {
+                id: "scene9",
+                text: "'Btw... Aku tau aku belum selalu bisa ada di dekat kamu setiap waktu..\n\ Tapi aku pengen kamu selalu aman ke mana pun kamu pergi.\n\n Makanya aku siapin helm itu, semoga bisa jadi bentuk kecil dari rasa sayangku—yang selalu pengen ngejaga kamu, walaupun dari jauh'",
+                img: "img/karakter3.png",
+                choices: [
+                    { label: "Lanjut", next: 9 }
+                ]
+            },
+
+            {
+                id: "scene14",
+                text: "Hehe... baiklah sampai sini dulu ya dari Rin~ Makasih banyak udah mau dengerin Rin sampai akhir. Aku seneng banget bisa nemenin kamu hari ini. Semoga harinya menyenangkan, dan semoga kamu selalu dikelilingi hal-hal baik ya! Kalau kamu kangen Rin, aku di sini kok... tinggal minta Rian aja~ haha\n\ Bye bye! 💫🌸",
+                img: "img/karakter3.png",
+                choices: [
+                    { label: "Lanjut", next: 14 }
+                ]
+            },
+            {
+                id: "scene15",
+                text: "~Rin system End....~ \n\n Developed by Hizrian Nur K, Thanks for your participation\n\n Happy Birthday.."
+            },
+        ];
+
+        let currentScene = 0;
+
+        function showScene(index) {
+            const scene = scenes[index];
+            currentScene = index;
+            document.getElementById("text-box").innerHTML = "";
+            document.getElementById("choice-box").innerHTML = "";
+            document.getElementById("char").src = scene.img;
+
+            typeWriter(scene.text, "text-box", () => {
+                scene.choices.forEach(choice => {
+                    const btn = document.createElement("button");
+                    btn.innerText = choice.label;
+                    btn.onclick = () => {
+                        if (choice.next !== undefined) {
+                            showScene(choice.next);
+                        } else if (choice.action) {
+                            choice.action();
+                        }
+                    };
+                    document.getElementById("choice-box").appendChild(btn);
+                });
+            });
+        }
+
+        function typeWriter(text, elementId, callback) {
+            let i = 0;
+            const speed = 30;
+            const element = document.getElementById(elementId);
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            type();
+        }
+
+        // Start the story
+        showScene(0);
+    </script>
+</body>
+
+</html>
